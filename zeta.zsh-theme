@@ -47,13 +47,11 @@ function get_space {
     local zero='%([BSUbfksu]|([FB]|){*})'
     local len=${#${(S%%)str//$~zero/}}
     local size=$(( $COLUMNS - $len - 1 ))
-    local space=""
-    while [[ $size -gt 0 ]]; do
-        space="$space "
-        let size=$size-1
-    done
+    local space=$(printf "%${size}s")
     echo $space
 }
+
+
 
 # Prompt: USER@MACHINE: DIRECTORY <BRANCH [STATUS]> --- (TIME_STAMP)
 # > command
@@ -65,7 +63,7 @@ function print_prompt_head {
 %{$fg_bold[yellow]%}$(get_current_dir)%{$reset_color%}\
 $(get_git_prompt) "
     local right_prompt="%{$fg[blue]%}($(get_time_stamp))%{$reset_color%} "
-    print -rP "$left_prompt$(get_space $left_prompt $right_prompt)$right_prompt"
+    print -r "$left_prompt$(get_space $left_prompt $right_prompt)$right_prompt"
 }
 
 function get_prompt_indicator {
