@@ -9,6 +9,7 @@
 * Changes symbol to env var ZETA_SYMBOL
 * Adds PROMPT2 (second line of input)
 * Stops print prompt expansion (clobbers on resize but doesn't interfere with other plugins)
+* Changes remote box name from cyan to red
 
 ## Installation
 

@@ -3,13 +3,20 @@
 # Copyright: Skyler Lee, 2015
 
 ZETA_SYMBOL='λ'
+ZETA_SSH_OR_LOCAL="$(([ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]) && echo 'ssh' || echo 'local')"
 
-# Machine name.
+# Machine name, cyan if local, red if SSH
 function get_box_name {
-    if [ -f ~/.box-name ]; then
-        cat ~/.box-name
+    local box_name=""
+    if [[ $ZETA_SSH_OR_LOCAL == "ssh" ]]; then
+        box_name="%{$fg_bold[cyan]%}"
     else
-        echo $HOST
+        box_name="%{$fg_bold[red]%}"
+    fi
+    if [ -f ~/.box-name ]; then
+        box_name="${box_name}$(cat ~/.box-name)"
+    else
+        box_name="${box_name}${HOST}"
     fi
 }
 
@@ -51,15 +58,13 @@ function get_space {
     echo $space
 }
 
-
-
 # Prompt: USER@MACHINE: DIRECTORY <BRANCH [STATUS]> --- (TIME_STAMP)
 # > command
 function print_prompt_head {
     local left_prompt="\
 %{$fg_bold[green]%}$(get_usr_name)\
 %{$fg[blue]%}@\
-%{$fg_bold[cyan]%}$(get_box_name): \
+$(get_box_name): \
 %{$fg_bold[yellow]%}$(get_current_dir)%{$reset_color%}\
 $(get_git_prompt) "
     local right_prompt="%{$fg[blue]%}($(get_time_stamp))%{$reset_color%} "
