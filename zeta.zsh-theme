@@ -7,17 +7,18 @@ ZETA_SSH_OR_LOCAL="$(([ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]) && echo 'ssh' |
 
 # Machine name, cyan if local, red if SSH
 function get_box_name {
-    local box_name=""
+    local box_name
     if [[ $ZETA_SSH_OR_LOCAL == "ssh" ]]; then
-        box_name="%{$fg_bold[cyan]%}"
-    else
         box_name="%{$fg_bold[red]%}"
-    fi
-    if [ -f ~/.box-name ]; then
-        box_name="${box_name}$(cat ~/.box-name)"
     else
-        box_name="${box_name}${HOST}"
+        box_name="%{$fg_bold[cyan]%}"
     fi
+    if [[ -f ~/.box-name ]]; then
+        box_name+="$(cat ~/.box-name)"
+    else
+        box_name+="${HOST}"
+    fi
+    echo "$box_name%F{reset}"
 }
 
 # User name.
